@@ -1,0 +1,49 @@
+# Web frontend
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+  labels:
+    app: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+      annotations:
+        'consul.hashicorp.com/connect-inject': 'true'
+        'consul.hashicorp.com/connect-service-upstreams': 'api:9001'
+    spec:
+      containers:
+        - name: web
+          image: hashicorp/dashboard-service:0.0.4
+          ports:
+            - containerPort: 9002
+              name: http
+          env:
+            - name: COUNTING_SERVICE_URL
+              value: 'http://localhost:9001'
+
+---
+
+#Web dashboard service
+apiVersion: 'v1'
+kind: 'Service'
+metadata:
+  name: 'dashboard-service-load-balancer'
+  namespace: 'default'
+  labels:
+    app: 'web'
+spec:
+  ports:
+    - protocol: 'TCP'
+      port: 80
+      targetPort: 9002
+  selector:
+    app: 'web'
+  type: 'LoadBalancer'
