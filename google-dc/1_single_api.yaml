@@ -1,0 +1,29 @@
+# API service version with 1 api
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-deployment
+  labels:
+    app: api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+        "consul.hashicorp.com/service-meta-location": "google"
+        "consul.hashicorp.com/service-tags": "google"
+    spec:
+      containers:
+      - name: api
+        image: hashicorp/counting-service:0.0.2
+        ports:
+        - containerPort: 9001
+
+---
