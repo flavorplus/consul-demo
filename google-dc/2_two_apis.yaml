@@ -1,0 +1,26 @@
+# API service version with 1 api
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: api-a
+spec:
+  selector:
+    matchLabels:
+      app: api-b # has to match .spec.template.metadata.labels
+  serviceName: 'api-b'
+  replicas: 2 # by default is 1
+  template:
+    metadata:
+      labels:
+        app: api-b # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: api-b
+          image: hashicorp/counting-service:0.0.2
+          ports:
+            - containerPort: 9001
+              name: http
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/zone: europe-west4-b
