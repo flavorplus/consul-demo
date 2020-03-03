@@ -23,4 +23,4 @@ spec:
             - containerPort: 9001
               name: http
       nodeSelector:
-        failure-domain.beta.kubernetes.io/region: europe-west4-a
+        failure-domain.beta.kubernetes.io/zone: europe-west4-a
