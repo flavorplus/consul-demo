@@ -768,7 +768,7 @@ meshGateway:
     # for example via a DNS entry that routes to the Service fronting the Deployment.
     # meshGateway.wanAddress.port will be used as the port for the wan address.
     # useNodeIP and useNodeName must be false.
-    host: '35.214.164.212'
+    host: '34.91.160.67'
 
   # The service option configures the Service that fronts the Gateway Deployment.
   service:
@@ -791,7 +791,7 @@ meshGateway:
 
     # Optional YAML string that will be appended to the Service spec.
     additionalSpec: |
-      loadBalancerIP: "35.214.164.212"
+      loadBalancerIP: "34.91.160.67"
 
   # Envoy image to use. For Consul v1.7+, Envoy version 1.13+ is required.
   imageEnvoy: envoyproxy/envoy:v1.13.0
