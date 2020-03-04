@@ -17,7 +17,7 @@ spec:
         app: web
       annotations:
         'consul.hashicorp.com/connect-inject': 'true'
-        'consul.hashicorp.com/connect-service-upstreams': 'api-a:9001'
+        'consul.hashicorp.com/connect-service-upstreams': 'api:9001'
     spec:
       containers:
         - name: web
