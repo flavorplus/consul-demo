@@ -14,6 +14,11 @@ spec:
     metadata:
       labels:
         app: api-a # has to match .spec.selector.matchLabels
+      annotations:
+        "consul.hashicorp.com/connect-inject": "true"
+        "consul.hashicorp.com/connect-service": "api"
+        "consul.hashicorp.com/service-meta-zone": "a"
+        "consul.hashicorp.com/service-tags": "zone_a"
     spec:
       terminationGracePeriodSeconds: 10
       containers:
