@@ -31,6 +31,8 @@ metadata:
     app: central-config-balance
 spec:
   template:
+    annotations:
+      "consul.hashicorp.com/connect-inject": "false"
     spec:
       restartPolicy: Never
       volumes:

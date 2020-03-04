@@ -44,6 +44,8 @@ metadata:
     app: central-config-consul
 spec:
   template:
+    annotations:
+      "consul.hashicorp.com/connect-inject": "false"
     spec:
       restartPolicy: Never
       volumes:
