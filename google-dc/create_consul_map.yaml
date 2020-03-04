@@ -1,0 +1,29 @@
+# Central config stored as config map
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: central-config-routing
+data:
+  1_web_defaults.hcl: |
+    kind = "service-defaults"
+    name = "web"
+    protocol = "http"
+  2_api_defaults.hcl: |
+    kind = "service-defaults"
+    name = "api"
+    protocol = "http"
+  3_api_resolver.hcl: |
+    kind = "service-resolver"
+    name = "api"
+    # https://www.consul.io/api/health.html#filtering-2
+    # # Show Node.Meta demonstration showing performance testing a new instance type
+    default_subset = "v1"
+    subsets = {
+      v1 = {
+        filter = "Service.Meta.version == 1"
+      }
+      v2 = {
+        filter = "Service.Meta.version == 2"
+      }
+    }

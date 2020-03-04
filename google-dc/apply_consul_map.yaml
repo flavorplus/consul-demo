@@ -1,0 +1,31 @@
+# Job to load central config
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: central-config-routing
+  labels:
+    app: central-config-routing
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: central-config
+          configMap:
+            name: central-config-routing
+      containers:
+        - name: central-config-split
+          image: 'nicholasjackson/consul-envoy:v1.6.1-v0.10.0'
+          imagePullPolicy: Always
+          env:
+            - name: 'CONSUL_HTTP_ADDR'
+              value: 'consul-consul-server:8500'
+            - name: 'CONSUL_GRPC_ADDR'
+              value: 'consul-consul-server:8502'
+            - name: 'CENTRAL_CONFIG_DIR'
+              value: '/config'
+          volumeMounts:
+            - name: 'central-config'
+              readOnly: true
+              mountPath: '/config'
