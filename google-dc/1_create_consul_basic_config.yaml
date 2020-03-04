@@ -1,0 +1,69 @@
+# Central config stored as config map
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: central-config-consul
+data:
+  1_web_defaults.hcl: |
+    kind = "service-defaults"
+    name = "web"
+    protocol = "http"
+  2_api_defaults.hcl: |
+    kind = "service-defaults"
+    name = "api"
+    protocol = "http"
+  3_api_resolver.hcl: |
+    kind = "service-resolver"
+    name = "api"
+    connect_timeout = "5s"
+    default_subset = "a"
+    subsets = {
+      a = {
+        filter = "Service.Meta.zone == a"
+      }
+      b = {
+        filter = "Service.Meta.zone == b"
+      }
+    }
+    failover = {
+      "*" = {
+        datacenters = "local-dc"
+      }
+    }
+
+---
+
+# Job to load central config
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: central-config-consul
+  labels:
+    app: central-config-consul
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: central-config
+          configMap:
+            name: central-config-consul
+      containers:
+        - name: central-config-consul
+          image: 'nicholasjackson/consul-envoy:v1.6.1-v0.10.0'
+          imagePullPolicy: Always
+          env:
+            - name: 'CONSUL_HTTP_ADDR'
+              value: 'consul-consul-server:8500'
+            - name: 'CONSUL_GRPC_ADDR'
+              value: 'consul-consul-server:8502'
+            - name: 'CENTRAL_CONFIG_DIR'
+              value: '/config'
+          volumeMounts:
+            - name: 'central-config'
+              readOnly: true
+              mountPath: '/config'
+
+    

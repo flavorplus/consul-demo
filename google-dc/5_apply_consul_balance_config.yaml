@@ -3,34 +3,21 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: central-config-routing
+  name: central-config-balance
 data:
-  1_web_defaults.hcl: |
-    kind = "service-defaults"
-    name = "web"
-    protocol = "http"
-  2_api_defaults.hcl: |
-    kind = "service-defaults"
+  4_api_splitter.hcl: |
+    kind = "service-splitter"
     name = "api"
-    protocol = "http"
-  3_api_resolver.hcl: |
-    kind = "service-resolver"
-    name = "api"
-    connect_timeout = "5s"
-    default_subset = "a"
-    subsets = {
-      a = {
-        filter = "Service.Meta.zone == a"
-      }
-      b = {
-        filter = "Service.Meta.zone == b"
-      }
-    }
-    failover = {
-      "*" = {
-        datacenters = "local-dc"
-      }
-    }
+    splits = [
+      {
+        weight         = 80
+        service_subset = "a"
+      },
+      {
+        weight         = 20
+        service_subset = "b"
+      },
+    ]
 
 ---
 
@@ -39,9 +26,9 @@ data:
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: central-config-routing
+  name: central-config-balance
   labels:
-    app: central-config-routing
+    app: central-config-balance
 spec:
   template:
     spec:
@@ -49,9 +36,9 @@ spec:
       volumes:
         - name: central-config
           configMap:
-            name: central-config-routing
+            name: central-config-balance
       containers:
-        - name: central-config-split
+        - name: central-config-balance
           image: 'nicholasjackson/consul-envoy:v1.6.1-v0.10.0'
           imagePullPolicy: Always
           env:
