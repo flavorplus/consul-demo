@@ -1,0 +1,64 @@
+version: '3.3'
+services:
+  local-dc:
+    image: consul:1.7.1
+    command: ['consul', 'agent', '-config-file=/config/consul.hcl']
+    volumes:
+      - './config:/config'
+    ports:
+      - 8500:8500
+      - 8300:8300
+      - 8302:8302
+    networks:
+      dc:
+        ipv4_address: 10.5.0.2
+
+  # Define currency service and envoy sidecar proxy for version 2 of the service
+  api-local:
+    image: hashicorp/counting-service:0.0.2
+    networks:
+      dc:
+        ipv4_address: 10.5.0.3
+    ports:
+      - 9001:9001
+  api-local-proxy:
+    image: nicholasjackson/consul-envoy:v1.6.1-v0.10.0
+    environment:
+      CONSUL_HTTP_ADDR: 10.5.0.2:8500
+      CONSUL_GRPC_ADDR: 10.5.0.2:8502
+      SERVICE_CONFIG: /config/api.hcl
+    volumes:
+      - './config:/config'
+    command: ['consul', 'connect', 'envoy', '-sidecar-for', 'api-local']
+    network_mode: 'service:api-local'
+
+  gateway-local:
+    image: nicholasjackson/consul-envoy:v1.6.1-v0.10.0
+    environment:
+      CONSUL_HTTP_ADDR: 10.5.0.2:8500
+      CONSUL_GRPC_ADDR: 10.5.0.2:8502
+    command:
+      [
+        'consul',
+        'connect',
+        'envoy',
+        '-mesh-gateway',
+        '-register',
+        '-address',
+        '10.5.0.4:443',
+        '-wan-address',
+        '213.93.201.14:443',
+        '--',
+        '-l',
+        'debug',
+      ]
+    networks:
+      dc:
+        ipv4_address: 10.5.0.4
+
+networks:
+  dc:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
