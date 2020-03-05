@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $# -ne 3 ]
+if [ $# -ne 1 ]
 then
   echo "Usage: $0 <CLIENT_KEY_NAME>"
   exit
