@@ -33,7 +33,6 @@ data:
     }
 
 ---
-
 # Job to load central config
 
 apiVersion: batch/v1
@@ -44,8 +43,9 @@ metadata:
     app: central-config-consul
 spec:
   template:
-    annotations:
-      "consul.hashicorp.com/connect-inject": "false"
+    metadata:
+      annotations:
+        'consul.hashicorp.com/connect-inject': 'false'
     spec:
       restartPolicy: Never
       volumes:
@@ -67,5 +67,3 @@ spec:
             - name: 'central-config'
               readOnly: true
               mountPath: '/config'
-
-    
