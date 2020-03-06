@@ -776,7 +776,7 @@ meshGateway:
     enabled: false
 
     # Type of service, ex. LoadBalancer, ClusterIP.
-    type: LoadBalancer
+    type: nodePort
 
     # Port that the service will be exposed on.
     # The targetPort will be set to meshGateway.containerPort.
@@ -784,14 +784,13 @@ meshGateway:
 
     # Optional nodePort of the service. Can be used in conjunction with
     # type: NodePort.
-    nodePort: null
+    nodePort: 443
 
     # Optional YAML string for additional annotations.
     annotations: null
 
     # Optional YAML string that will be appended to the Service spec.
-    additionalSpec: |
-      loadBalancerIP: "34.91.160.67"
+    additionalSpec: null
 
   # Envoy image to use. For Consul v1.7+, Envoy version 1.13+ is required.
   imageEnvoy: envoyproxy/envoy:v1.13.0
