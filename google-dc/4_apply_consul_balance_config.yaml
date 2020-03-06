@@ -10,11 +10,11 @@ data:
     name = "api"
     splits = [
       {
-        weight         = 80
+        weight         = 50
         service_subset = "a"
       },
       {
-        weight         = 20
+        weight         = 50
         service_subset = "b"
       },
     ]
