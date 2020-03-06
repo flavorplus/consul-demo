@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: central-config-balance
+  name: central-config-balance-zoneb
 data:
   4_api_splitter.hcl: |
     kind = "service-splitter"
@@ -40,7 +40,7 @@ spec:
       volumes:
         - name: central-config
           configMap:
-            name: central-config-balance
+            name: central-config-balance-zoneb
       containers:
         - name: central-config-balance
           image: 'nicholasjackson/consul-envoy:v1.6.1-v0.10.0'
