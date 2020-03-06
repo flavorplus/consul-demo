@@ -1,0 +1,59 @@
+# Central config stored as config map
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: central-config-balance
+data:
+  4_api_splitter.hcl: |
+    kind = "service-splitter"
+    name = "api"
+    splits = [
+      {
+        weight         = 5
+        service_subset = "a"
+      },
+      {
+        weight         = 95
+        service_subset = "b"
+      },
+    ]
+
+---
+
+# Job to load central config
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: central-config-balance
+  labels:
+    app: central-config-balance
+spec:
+  template:
+    metadata:
+      annotations:
+        "consul.hashicorp.com/connect-inject": "false"
+    spec:
+      restartPolicy: Never
+      volumes:
+        - name: central-config
+          configMap:
+            name: central-config-balance
+      containers:
+        - name: central-config-balance
+          image: 'nicholasjackson/consul-envoy:v1.6.1-v0.10.0'
+          imagePullPolicy: Always
+          env:
+            - name: 'CONSUL_HTTP_ADDR'
+              value: 'consul-consul-server:8500'
+            - name: 'CONSUL_GRPC_ADDR'
+              value: 'consul-consul-server:8502'
+            - name: 'CENTRAL_CONFIG_DIR'
+              value: '/config'
+          volumeMounts:
+            - name: 'central-config'
+              readOnly: true
+              mountPath: '/config'
+
+    
