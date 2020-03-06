@@ -55,7 +55,7 @@ metadata:
   labels:
     app: central-config-consul
 spec:
-  ttlSecondsAfterFinished: 20s
+  ttlSecondsAfterFinished: 20
   template:
     metadata:
       annotations:
