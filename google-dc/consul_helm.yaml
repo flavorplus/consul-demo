@@ -768,12 +768,12 @@ meshGateway:
     # for example via a DNS entry that routes to the Service fronting the Deployment.
     # meshGateway.wanAddress.port will be used as the port for the wan address.
     # useNodeIP and useNodeName must be false.
-    host: '34.91.160.67'
+    host: null
 
   # The service option configures the Service that fronts the Gateway Deployment.
   service:
     # Whether to create a Service or not.
-    enabled: true
+    enabled: false
 
     # Type of service, ex. LoadBalancer, ClusterIP.
     type: LoadBalancer
