@@ -30,6 +30,7 @@ metadata:
   labels:
     app: central-config-balance
 spec:
+  ttlSecondsAfterFinished: 20
   template:
     metadata:
       annotations:

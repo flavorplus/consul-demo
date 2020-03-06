@@ -31,6 +31,19 @@ data:
         datacenters = "local-dc"
       }
     }
+  4_api_splitter.hcl: |
+    kind = "service-splitter"
+    name = "api"
+    splits = [
+      {
+        weight         = 100
+        service_subset = "a"
+      },
+      {
+        weight         = 0
+        service_subset = "b"
+      },
+    ]
 
 ---
 # Job to load central config
@@ -42,6 +55,7 @@ metadata:
   labels:
     app: central-config-consul
 spec:
+  ttlSecondsAfterFinished: 20s
   template:
     metadata:
       annotations:
