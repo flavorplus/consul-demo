@@ -3,7 +3,7 @@ data_dir = "/tmp/"
 log_level = "DEBUG"
 
 datacenter = "local-dc"
-primary_datacenter = "google-dc"
+primary_datacenter = "google-dc1"
 
 server = true
 
@@ -24,5 +24,5 @@ ui = true
 enable_central_service_config = true
 
 advertise_addr = "10.5.0.2"
-advertise_addr_wan = "213.93.201.14"
-retry_join_wan = ["34.91.160.67"]
+advertise_addr_wan = "10.240.0.2"
+retry_join_wan = ["10.36.1.4"]

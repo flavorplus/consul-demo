@@ -16,13 +16,18 @@ services:
   # Define currency service and envoy sidecar proxy for version 2 of the service
   api-local:
     image: hashicorp/counting-service:0.0.2
+    depends_on:
+      - local-dc
     networks:
       dc:
         ipv4_address: 10.5.0.3
     ports:
       - 9001:9001
+      - 20000:20000
   api-local-proxy:
     image: nicholasjackson/consul-envoy:v1.6.1-v0.10.0
+    depends_on:
+      - local-dc
     environment:
       CONSUL_HTTP_ADDR: 10.5.0.2:8500
       CONSUL_GRPC_ADDR: 10.5.0.2:8502
@@ -34,6 +39,10 @@ services:
 
   gateway-local:
     image: nicholasjackson/consul-envoy:v1.6.1-v0.10.0
+    depends_on:
+      - local-dc
+      - api-local-proxy
+      - api-local
     environment:
       CONSUL_HTTP_ADDR: 10.5.0.2:8500
       CONSUL_GRPC_ADDR: 10.5.0.2:8502
@@ -47,7 +56,7 @@ services:
         '-address',
         '10.5.0.4:443',
         '-wan-address',
-        '213.93.201.14:443',
+        '10.240.0.2:443',
         '--',
         '-l',
         'debug',
